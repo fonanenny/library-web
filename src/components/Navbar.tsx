@@ -15,10 +15,19 @@ export default function Navbar() {
   };
 
   return (
-    <nav className='flex items-center justify-between border-b px-8 py-4'>
-      <Link to='/' className='text-xl font-bold'>
-        Library Web 📚
+    <nav className='flex items-center justify-between border-b border-neutral-200 px-8 py-4'>
+      <Link to='/' className='flex items-center gap-2'>
+        <img src='/logobiru.png' alt='Booky' className='h-8 w-8' />
+        <span className='text-xl font-bold text-neutral-950'>Booky</span>
       </Link>
+
+      <div className='relative w-full max-w-md'>
+        <input
+          type='text'
+          placeholder='Search book'
+          className='w-full rounded-full border border-neutral-200 py-2 pl-4 pr-4 text-sm outline-none focus:border-primary'
+        />
+      </div>
 
       <div className='flex items-center gap-4'>
         {user ? (
@@ -29,7 +38,21 @@ export default function Navbar() {
             <Link to='/profile' className='text-sm hover:underline'>
               Profil
             </Link>
-            <span className='text-sm text-neutral-500'>Hai, {user.name}</span>
+
+            <img src='/cart.png' alt='Cart' className='h-6 w-6' />
+
+            <div className='flex items-center gap-2'>
+              <img
+                src='/avatar.png'
+                alt={user.name}
+                className='h-8 w-8 rounded-full object-cover'
+              />
+              <span className='text-sm font-medium text-neutral-950'>
+                {user.name}
+              </span>
+              <img src='/blackarrow.png' alt='' className='h-3 w-3' />
+            </div>
+
             <Button variant='outline' size='sm' onClick={handleLogout}>
               Logout
             </Button>

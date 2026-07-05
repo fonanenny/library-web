@@ -5,33 +5,22 @@ import { setCredentials } from '@/features/auth/authSlice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useNavigate } from 'react-router';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { useNavigate, Link } from 'react-router';
 
 export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // State untuk isi form
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Dipanggil saat tombol login diklik
   const handleLogin = async () => {
     setError('');
     setLoading(true);
     try {
-      // Kirim ke API: POST /api/auth/login
       const response = await api.post('/auth/login', { email, password });
-      // response.data = { token, user }
       dispatch(setCredentials(response.data.data));
       navigate('/');
     } catch (err) {
@@ -43,41 +32,67 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-neutral-50'>
-      <Card className='w-[380px]'>
-        <CardHeader>
-          <CardTitle className='text-2xl'>Login</CardTitle>
-          <CardDescription>Masuk ke Library Web</CardDescription>
-        </CardHeader>
-        <CardContent className='flex flex-col gap-4'>
+    <div className='flex min-h-screen items-center justify-center bg-white'>
+      <div className='w-full max-w-[380px]'>
+        <div className='mb-2 flex items-center gap-2'>
+          <img src='/logobiru.png' alt='Booky' className='h-8 w-8' />
+          <span className='text-xl font-bold text-neutral-950'>Booky</span>
+        </div>
+
+        <h1 className='mb-1 text-2xl font-bold text-neutral-950'>Login</h1>
+        <p className='mb-6 text-sm text-neutral-500'>
+          Masuk ke akun Booky kamu untuk mulai meminjam buku.
+        </p>
+
+        <div className='flex flex-col gap-4'>
           <div className='flex flex-col gap-2'>
-            <Label htmlFor='email'>Email</Label>
+            <Label htmlFor='email' className='text-neutral-950'>
+              Email
+            </Label>
             <Input
               id='email'
               type='email'
-              placeholder='admin@library.local'
+              placeholder='Masukkan email kamu'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className='rounded-lg border-neutral-200 py-5'
             />
           </div>
           <div className='flex flex-col gap-2'>
-            <Label htmlFor='password'>Password</Label>
+            <Label htmlFor='password' className='text-neutral-950'>
+              Password
+            </Label>
             <Input
               id='password'
               type='password'
-              placeholder='••••••••'
+              placeholder='Masukkan password kamu'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className='rounded-lg border-neutral-200 py-5'
             />
           </div>
 
-          {error && <p className='text-sm text-red-500'>{error}</p>}
+          {error && <p className='text-sm text-danger'>{error}</p>}
 
-          <Button onClick={handleLogin} disabled={loading}>
+          <Button
+            onClick={handleLogin}
+            disabled={loading}
+            className='mt-2 rounded-full bg-primary py-5 text-white hover:bg-primary/90'
+          >
             {loading ? 'Loading...' : 'Login'}
           </Button>
-        </CardContent>
-      </Card>
+
+          <p className='text-center text-sm text-neutral-500'>
+            Belum punya akun?{' '}
+            <Link
+              to='/register'
+              className='font-medium text-primary hover:underline'
+            >
+              Register
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

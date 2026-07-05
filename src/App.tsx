@@ -1,12 +1,12 @@
 import { Routes, Route, useLocation } from 'react-router';
 import LoginPage from '@/features/auth/LoginPage';
 import RegisterPage from '@/features/auth/RegisterPage';
-import BookListPage from '@/features/books/BookListPage';
 import BookDetailPage from '@/features/books/BookDetailPage';
 import MyLoansPage from '@/features/loans/MyLoansPage';
 import Navbar from '@/components/Navbar';
 import ProfilePage from '@/features/profile/ProfilePage';
 import { Toaster } from '@/components/ui/sonner';
+import HomePage from '@/features/books/HomePage';
 
 function App() {
   const location = useLocation();
@@ -21,7 +21,7 @@ function App() {
       <Routes>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
-        <Route path='/' element={<BookListPage />} />
+        <Route path='/' element={<HomePage />} />
         <Route path='/books/:id' element={<BookDetailPage />} />
         <Route path='/my-loans' element={<MyLoansPage />} />
         <Route path='/profile' element={<ProfilePage />} />

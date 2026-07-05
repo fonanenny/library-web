@@ -8,7 +8,7 @@ import Spinner from '@/components/Spinner';
 import ErrorState from '@/components/ErrorState';
 
 export default function BookDetailPage() {
-  const { id } = useParams(); // ambil id dari URL
+  const { id } = useParams();
   const queryClient = useQueryClient();
 
   const {
@@ -37,8 +37,8 @@ export default function BookDetailPage() {
   const reviewMutation = useMutation({
     mutationFn: () => addReview(book!.id, star, comment),
     onSuccess: () => {
-      setComment(''); // kosongkan form
-      queryClient.invalidateQueries({ queryKey: ['book', id] }); // refresh review
+      setComment('');
+      queryClient.invalidateQueries({ queryKey: ['book', id] });
     },
     onError: () => {
       toast.error('Gagal menambah review. Pastikan sudah login.');
@@ -49,62 +49,97 @@ export default function BookDetailPage() {
   if (isError || !book) return <ErrorState message='Gagal memuat buku.' />;
 
   return (
-    <div className='mx-auto max-w-4xl p-8'>
-      <Link to='/' className='text-sm text-blue-600 hover:underline'>
-        ← Kembali ke daftar
-      </Link>
+    <div className='mx-auto max-w-5xl p-8'>
+      {/* Breadcrumb */}
+      <div className='mb-6 text-sm text-neutral-500'>
+        <Link to='/' className='hover:underline'>
+          Home
+        </Link>
+        <span className='mx-2'>{'>'}</span>
+        <span>{book.category.name}</span>
+        <span className='mx-2'>{'>'}</span>
+        <span className='text-neutral-950'>{book.title}</span>
+      </div>
 
-      <div className='mt-6 flex flex-col gap-6 md:flex-row'>
+      <div className='flex flex-col gap-8 md:flex-row'>
         {/* Cover */}
         <img
           src={book.coverImage}
           alt={book.title}
-          className='h-80 w-56 shrink-0 rounded-lg object-cover'
+          className='h-80 w-56 shrink-0 rounded-lg object-cover shadow-md'
         />
 
         {/* Info */}
         <div className='flex flex-col gap-3'>
-          <span className='w-fit rounded bg-neutral-100 px-2 py-1 text-xs'>
+          <span className='w-fit rounded-full border border-neutral-200 px-3 py-1 text-xs text-neutral-700'>
             {book.category.name}
           </span>
-          <h1 className='text-3xl font-bold'>{book.title}</h1>
-          <p className='text-neutral-600'>oleh {book.author.name}</p>
-          <p className='text-sm'>
-            ⭐ {book.rating} ({book.reviewCount} review)
-          </p>
-          <p className='text-sm'>
-            Stok tersedia:{' '}
-            <span className='font-semibold'>{book.availableCopies}</span> /{' '}
-            {book.totalCopies}
-          </p>
-          <p className='mt-2 text-neutral-700'>{book.description}</p>
+          <h1 className='text-3xl font-bold text-neutral-950'>{book.title}</h1>
+          <p className='text-neutral-500'>{book.author.name}</p>
 
-          <Button
-            className='mt-4 w-fit'
-            disabled={book.availableCopies === 0 || borrowMutation.isPending}
-            onClick={() => borrowMutation.mutate()}
-          >
-            {borrowMutation.isPending
-              ? 'Memproses...'
-              : book.availableCopies === 0
-                ? 'Stok habis'
-                : 'Pinjam Buku'}
-          </Button>
+          <div className='mt-2 flex items-center gap-8'>
+            <div>
+              <p className='text-lg font-bold text-neutral-950'>
+                {book.availableCopies}
+              </p>
+              <p className='text-xs text-neutral-500'>Stock</p>
+            </div>
+            <div>
+              <p className='text-lg font-bold text-neutral-950'>
+                {book.rating}
+              </p>
+              <p className='text-xs text-neutral-500'>Rating</p>
+            </div>
+            <div>
+              <p className='text-lg font-bold text-neutral-950'>
+                {book.reviewCount}
+              </p>
+              <p className='text-xs text-neutral-500'>Reviews</p>
+            </div>
+          </div>
+
+          <p className='mt-2 max-w-xl text-sm leading-relaxed text-neutral-700'>
+            {book.description}
+          </p>
+
+          <div className='mt-4 flex gap-3'>
+            <Button
+              variant='outline'
+              className='rounded-full border-neutral-300 px-6'
+            >
+              Add to Cart
+            </Button>
+            <Button
+              className='rounded-full bg-primary px-6 text-white hover:bg-primary/90'
+              disabled={book.availableCopies === 0 || borrowMutation.isPending}
+              onClick={() => borrowMutation.mutate()}
+            >
+              {borrowMutation.isPending
+                ? 'Memproses...'
+                : book.availableCopies === 0
+                  ? 'Stok habis'
+                  : 'Borrow Book'}
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Review */}
-      <div className='mt-10'>
-        <h2 className='text-xl font-bold'>Review ({book.reviews.length})</h2>
+      <div className='mt-12 border-t border-neutral-200 pt-8'>
+        <h2 className='mb-4 text-xl font-bold text-neutral-950'>Review</h2>
+        <p className='mb-6 text-sm text-neutral-700'>
+          ⭐ {book.rating} ({book.reviewCount} Ulasan)
+        </p>
+
         {/* Form tambah review */}
-        <div className='mt-4 rounded-lg border p-4'>
-          <p className='mb-2 font-semibold'>Tulis Review</p>
+        <div className='mb-6 rounded-lg border border-neutral-200 p-4'>
+          <p className='mb-2 font-semibold text-neutral-950'>Tulis Review</p>
           <div className='mb-3 flex items-center gap-2'>
-            <span className='text-sm'>Rating:</span>
+            <span className='text-sm text-neutral-700'>Rating:</span>
             <select
               value={star}
               onChange={(e) => setStar(Number(e.target.value))}
-              className='rounded border px-2 py-1 text-sm'
+              className='rounded border border-neutral-200 px-2 py-1 text-sm'
             >
               {[5, 4, 3, 2, 1].map((n) => (
                 <option key={n} value={n}>
@@ -117,11 +152,11 @@ export default function BookDetailPage() {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder='Bagaimana pendapatmu tentang buku ini?'
-            className='w-full rounded border p-2 text-sm'
+            className='w-full rounded border border-neutral-200 p-2 text-sm'
             rows={3}
           />
           <Button
-            className='mt-2'
+            className='mt-2 rounded-full bg-primary text-white hover:bg-primary/90'
             size='sm'
             disabled={reviewMutation.isPending || comment.trim() === ''}
             onClick={() => reviewMutation.mutate()}
@@ -129,14 +164,19 @@ export default function BookDetailPage() {
             {reviewMutation.isPending ? 'Mengirim...' : 'Kirim Review'}
           </Button>
         </div>
-        <div className='mt-4 flex flex-col gap-4'>
+
+        {/* List review */}
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           {book.reviews.map((review) => (
-            <div key={review.id} className='rounded-lg border p-4'>
-              <p className='font-semibold'>{review.user.name}</p>
-              <p className='text-sm text-yellow-600'>
-                {'⭐'.repeat(review.star)}
+            <div
+              key={review.id}
+              className='rounded-lg border border-neutral-200 p-4'
+            >
+              <p className='font-semibold text-neutral-950'>
+                {review.user.name}
               </p>
-              <p className='mt-1 text-neutral-700'>{review.comment}</p>
+              <p className='text-sm text-warning'>{'⭐'.repeat(review.star)}</p>
+              <p className='mt-1 text-sm text-neutral-700'>{review.comment}</p>
             </div>
           ))}
         </div>
