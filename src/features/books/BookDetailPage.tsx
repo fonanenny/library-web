@@ -46,7 +46,7 @@ export default function BookDetailPage() {
   });
 
   if (isLoading) return <Spinner label='Memuat buku...' />;
-  if (isError) return <ErrorState message='Gagal memuat buku.' />;
+  if (isError || !book) return <ErrorState message='Gagal memuat buku.' />;
 
   return (
     <div className='mx-auto max-w-4xl p-8'>

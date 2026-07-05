@@ -11,7 +11,7 @@ export default function ProfilePage() {
   });
 
   if (isLoading) return <Spinner label='Memuat buku...' />;
-  if (isError) return <ErrorState message='Gagal memuat buku.' />;
+  if (isError || !data) return <ErrorState message='Gagal memuat profil.' />;
 
   const { profile, loanStats, reviewsCount } = data;
 
