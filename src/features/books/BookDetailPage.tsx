@@ -3,6 +3,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getBookById, borrowBook, addReview } from './booksApi';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import Spinner from '@/components/Spinner';
+import ErrorState from '@/components/ErrorState';
 
 export default function BookDetailPage() {
   const { id } = useParams(); // ambil id dari URL
@@ -20,11 +23,11 @@ export default function BookDetailPage() {
   const borrowMutation = useMutation({
     mutationFn: () => borrowBook(book!.id),
     onSuccess: () => {
-      alert('Berhasil pinjam buku! 🎉');
+      toast.success('Berhasil pinjam buku! 🎉');
       queryClient.invalidateQueries({ queryKey: ['book', id] });
     },
     onError: () => {
-      alert('Gagal pinjam. Pastikan sudah login & stok tersedia.');
+      toast.error('Gagal pinjam. Pastikan sudah login & stok tersedia.');
     },
   });
 
@@ -38,16 +41,12 @@ export default function BookDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['book', id] }); // refresh review
     },
     onError: () => {
-      alert('Gagal menambah review. Pastikan sudah login.');
+      toast.error('Gagal menambah review. Pastikan sudah login.');
     },
   });
 
-  if (isLoading)
-    return <div className='p-8 text-center'>Loading detail...</div>;
-  if (isError || !book)
-    return (
-      <div className='p-8 text-center text-red-500'>Gagal memuat buku.</div>
-    );
+  if (isLoading) return <Spinner label='Memuat buku...' />;
+  if (isError) return <ErrorState message='Gagal memuat buku.' />;
 
   return (
     <div className='mx-auto max-w-4xl p-8'>

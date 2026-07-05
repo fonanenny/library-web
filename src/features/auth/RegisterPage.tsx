@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function RegisterPage() {
     try {
       // Kirim ke API: POST /api/auth/register
       await api.post('/auth/register', { name, email, phone, password });
-      alert('Register sukses! Silakan login. 🎉');
+      toast.success('Register sukses! Silakan login. 🎉');
       navigate('/login'); // setelah daftar, pindah ke login
     } catch (err) {
       setError('Register gagal. Cek data yang diisi.');

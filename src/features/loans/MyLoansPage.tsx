@@ -1,6 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router';
 import { getMyLoans, returnBook } from '@/features/books/booksApi';
+import { toast } from 'sonner';
+import Spinner from '@/components/Spinner';
+import ErrorState from '@/components/ErrorState';
 
 // Ubah tanggal ISO jadi format enak dibaca (misal "11 Jul 2026")
 function formatDate(iso: string) {
@@ -29,16 +32,12 @@ export default function MyLoansPage() {
       queryClient.invalidateQueries({ queryKey: ['myLoans'] });
     },
     onError: () => {
-      alert('Gagal mengembalikan buku.');
+      toast.error('Gagal mengembalikan buku.');
     },
   });
 
-  if (isLoading)
-    return <div className='p-8 text-center'>Loading pinjaman...</div>;
-  if (isError)
-    return (
-      <div className='p-8 text-center text-red-500'>Gagal memuat pinjaman.</div>
-    );
+  if (isLoading) return <Spinner label='Memuat buku...' />;
+  if (isError) return <ErrorState message='Gagal memuat buku.' />;
 
   return (
     <div className='mx-auto max-w-4xl p-8'>

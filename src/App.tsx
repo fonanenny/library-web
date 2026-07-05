@@ -6,6 +6,7 @@ import BookDetailPage from '@/features/books/BookDetailPage';
 import MyLoansPage from '@/features/loans/MyLoansPage';
 import Navbar from '@/components/Navbar';
 import ProfilePage from '@/features/profile/ProfilePage';
+import { Toaster } from '@/components/ui/sonner';
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
         <Route path='/my-loans' element={<MyLoansPage />} />
         <Route path='/profile' element={<ProfilePage />} />
       </Routes>
+      <Toaster richColors position='top-center' />
     </>
   );
 }

@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
 import { getProfile } from './profileApi';
+import Spinner from '@/components/Spinner';
+import ErrorState from '@/components/ErrorState';
 
 export default function ProfilePage() {
   const { data, isLoading, isError } = useQuery({
@@ -8,12 +10,8 @@ export default function ProfilePage() {
     queryFn: getProfile,
   });
 
-  if (isLoading)
-    return <div className='p-8 text-center'>Loading profil...</div>;
-  if (isError || !data)
-    return (
-      <div className='p-8 text-center text-red-500'>Gagal memuat profil.</div>
-    );
+  if (isLoading) return <Spinner label='Memuat buku...' />;
+  if (isError) return <ErrorState message='Gagal memuat buku.' />;
 
   const { profile, loanStats, reviewsCount } = data;
 

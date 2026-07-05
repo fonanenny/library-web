@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { getBooks } from './booksApi';
 import { Link } from 'react-router';
+import Spinner from '@/components/Spinner';
+import ErrorState from '@/components/ErrorState';
 
 export default function BookListPage() {
   // useQuery: ambil data buku, dengan caching otomatis
@@ -13,15 +15,8 @@ export default function BookListPage() {
     queryFn: getBooks,
   });
 
-  if (isLoading) {
-    return <div className='p-8 text-center'>Loading buku...</div>;
-  }
-
-  if (isError) {
-    return (
-      <div className='p-8 text-center text-red-500'>Gagal memuat buku.</div>
-    );
-  }
+  if (isLoading) return <Spinner label='Memuat buku...' />;
+  if (isError) return <ErrorState message='Gagal memuat buku.' />;
 
   return (
     <div className='p-8'>
